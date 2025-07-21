@@ -1,49 +1,46 @@
+🛠️ Motorola 6800 Assembler with GUI
+This project is an assembler simulator for the Motorola 6800 microprocessor. Developed in Python, it not only translates assembly instructions into machine code but also provides a user-friendly graphical interface to visualize memory and register states after compilation.
 
-# 🛠️ Motorola 6800 Assembler with GUI
+🎯 Project Purpose
+The aim of this project is to understand the logic behind an assembler and to build an interactive system capable of translating Motorola 6800 assembly code into corresponding machine code.
 
-Bu proje, **Motorola 6800** mikroişlemcisi için bir assembler simülatörüdür. Python ile geliştirilmiş olan bu uygulama, assembly komutlarını makine diline çevirmekle kalmaz, aynı zamanda kullanıcı dostu bir grafik arayüz ile derlenen kodun hafıza ve register durumlarını da görselleştirir.
-
-## 🎯 Projenin Amacı
-
-Bu proje, bir derleyici (assembler) mantığını anlamak ve 6800 işlemcisine uygun assembly komutlarını makine koduna çevirebilen interaktif bir sistem geliştirmek amacıyla oluşturulmuştur.
-
-## 📁 Proje Dosya Yapısı
-
-```
+📁 Project Structure
+bash
+Kopyala
+Düzenle
 Assembler_mc6800/
-├── assembler.py            # Assembler sınıfı: parsing, opcode çözümleme, hafıza ve register işlemleri
-├── gui.py                  # Tkinter tabanlı kullanıcı arayüzü
-├── opcodes_full.py         # Tüm 6800 komut seti ve opcode tanımları
-├── tempCodeRunnerFile.py   # Geçici çalışma dosyası (gereksiz)
-├── __pycache__/            # Derlenmiş Python bytecode dosyaları (ihmal edilebilir)
-```
+├── assembler.py            # Assembler class: parsing, opcode handling, memory and register operations
+├── gui.py                  # Tkinter-based graphical user interface
+├── opcodes_full.py         # Complete 6800 instruction set and opcode definitions
+├── tempCodeRunnerFile.py   # Temporary working file (can be ignored)
+├── __pycache__/            # Compiled Python bytecode files (can be ignored)
+🖥️ Features
+Analyzes assembly code line by line.
 
-## 🖥️ Özellikler
+Supports label resolution and various addressing modes.
 
-- Assembly kodlarını satır satır analiz eder.
-- Etiket (label) çözümlemesi ve adresleme modlarını destekler.
-- `.ORG`, `.END`, `.BYTE`, `.EQU` gibi pseudo-komutları işler.
-- Kayıtlar (A, B, X, SP) ve bellek durumunu görsel olarak sunar.
-- Derlenen makine kodunu listeler.
+Handles pseudo-instructions such as .ORG, .END, .BYTE, .EQU.
 
-## ▶️ Kurulum ve Çalıştırma
+Displays the state of registers (A, B, X, SP) and memory visually.
 
-### Gereksinimler
+Lists the resulting machine code.
 
-- Python 3.7+
-- Tkinter (standart Python kurulumu ile gelir)
+▶️ Installation and Running
+Requirements
+Python 3.7+
 
-### Çalıştırmak için
+Tkinter (included with standard Python installation)
 
-```bash
+To Run the Application
+bash
+Kopyala
+Düzenle
 python gui.py
-```
+Once the GUI opens, you can enter your assembly code and click the Assemble button. The compiled output, memory content, and register state will be displayed on the screen.
 
-GUI arayüz açıldığında assembly kodunuzu girip `Derle` butonuna basabilirsiniz. Derlenen kodun çıktısı, bellek içeriği ve register durumu ekranda görüntülenir.
+🧠 Notes for Developers
+The code follows a two-pass assembler logic: the first pass resolves labels, and the second pass translates opcodes.
 
+opcodes_full.py contains all opcode variations (immediate, direct, extended, indexed).
 
-## 🧠 Geliştiriciler İçin Notlar
-
-- Kod iki aşamalı bir assembler mantığı ile yazılmıştır: birinci geçişte label'lar işlenir, ikinci geçişte opcode'lar çözülür.
-- `opcodes_full.py` tüm opcode varyasyonlarını (immediate, direct, extended, indexed) içerir.
-- Gelecekte step-by-step simülasyon, breakpoint desteği ve hata ayıklayıcı gibi gelişmiş özellikler eklenebilir.
+Future improvements may include step-by-step simulation, breakpoint support, and a debugging interface.
