@@ -1,3 +1,6 @@
+
+🧠Created by: Buse Gül Rana Bilgin
+ 
 🛠️ Motorola 6800 Assembler with GUI
 This project is an assembler simulator for the Motorola 6800 microprocessor. Developed in Python, it not only translates assembly instructions into machine code but also provides a user-friendly graphical interface to visualize memory and register states after compilation.
 
