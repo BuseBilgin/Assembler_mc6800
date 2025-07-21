@@ -1,0 +1,95 @@
+import re
+
+OPCODES = {
+    # Load/Store
+    "LDAA_IMM": 0x86, "LDAA_DIR": 0x96, "LDAA_EXT": 0xB6, "LDAA_IDX": 0xA6,
+    "LDAB_IMM": 0xC6, "LDAB_DIR": 0xD6, "LDAB_EXT": 0xF6, "LDAB_IDX": 0xE6,
+    "STAA_DIR": 0x97, "STAA_EXT": 0xB7, "STAA_IDX": 0xA7,
+    "STAB_DIR": 0xD7, "STAB_EXT": 0xF7, "STAB_IDX": 0xE7,
+    "LDX_IMM": 0xCE, "LDX_DIR": 0xDE, "LDX_EXT": 0xFE, "LDX_IDX": 0xEE,
+    "STX_DIR": 0xDF, "STX_EXT": 0xFF, "STX_IDX": 0xEF,
+
+    # Arithmetic
+    "ADDA_IMM": 0x8B, "ADDA_DIR": 0x9B, "ADDA_EXT": 0xBB, "ADDA_IDX": 0xAB,
+    "ADDB_IMM": 0xCB, "ADDB_DIR": 0xDB, "ADDB_EXT": 0xFB, "ADDB_IDX": 0xEB,
+    "SUBA_IMM": 0x80, "SUBA_DIR": 0x90, "SUBA_EXT": 0xB0, "SUBA_IDX": 0xA0,
+    "SUBB_IMM": 0xC0, "SUBB_DIR": 0xD0, "SUBB_EXT": 0xF0, "SUBB_IDX": 0xE0,
+    "ABA": 0x1B, "SBA": 0x10, "MBA": 0x1B,
+
+    # Logic
+    "ANDA_IMM": 0x84, "ANDA_DIR": 0x94, "ANDA_EXT": 0xB4, "ANDA_IDX": 0xA4,
+    "ANDB_IMM": 0xC4, "ANDB_DIR": 0xD4, "ANDB_EXT": 0xF4, "ANDB_IDX": 0xE4,
+    "ORAA_IMM": 0x8A, "ORAA_DIR": 0x9A, "ORAA_EXT": 0xBA, "ORAA_IDX": 0xAA,
+    "ORAB_IMM": 0xCA, "ORAB_DIR": 0xDA, "ORAB_EXT": 0xFA, "ORAB_IDX": 0xEA,
+    "EORA_IMM": 0x88, "EORA_DIR": 0x98, "EORA_EXT": 0xB8, "EORA_IDX": 0xA8,
+
+    # Compare
+    "CMPA_IMM": 0x81, "CMPA_DIR": 0x91, "CMPA_EXT": 0xB1, "CMPA_IDX": 0xA1,
+    "CMPB_IMM": 0xC1, "CMPB_DIR": 0xD1, "CMPB_EXT": 0xF1, "CMPB_IDX": 0xE1,
+    "CPX_IMM": 0x8C, "CPX_DIR": 0x9C, "CPX_EXT": 0xBC, "CPX_IDX": 0xAC,
+    "CBA": 0x11,
+
+    # Bit test
+    "BITA_DIR": 0x85, "BITA_EXT": 0xB5, "BITA_IDX": 0xA5,
+    "BITB_DIR": 0xC5, "BITB_EXT": 0xF5, "BITB_IDX": 0xE5,
+
+    # Bit ops & misc
+    "COMA": 0x43, "NEGA": 0x40, "CLRA": 0x4F,
+    "COMB": 0x53, "NEGB": 0x50, "CLRB": 0x5F,
+    "ASLA": 0x48, "ASRA": 0x47, "LSRA": 0x44, "ROLA": 0x49, "RORA": 0x46, "TSTA": 0x4D,
+    "ASLB": 0x58, "ASRB": 0x57, "LSRB": 0x54, "ROLB": 0x59, "RORB": 0x56, "TSTB": 0x5D,
+    "INX": 0x08, "DEX": 0x09, "ABX": 0x3A,
+
+    # Transfer & Stack
+    "TAB": 0x16, "TBA": 0x17,
+    "PSHA": 0x36, "PULA": 0x32, "PSHB": 0x37, "PULB": 0x33,
+    "TSX": 0x30, "TXS": 0x35, "DES": 0x34,
+    "TAP": 0x06, "TPA": 0x07,
+    "INS": 0x31,
+
+    # Branching
+    "BRA": 0x20, "BEQ": 0x27, "BNE": 0x26, "BMI": 0x2B, "BPL": 0x2A,
+    "BCS": 0x25, "BCC": 0x24, "BVS": 0x29, "BVC": 0x28, "BRN": 0x21,
+
+    # Jump & Subroutine
+    "JMP_EXT": 0x7E, "JMP_IDX": 0x6E, "JMP_DIR": 0x6E,
+    "JSR_EXT": 0xBD, "JSR_IDX": 0x9D, "JSR_DIR": 0x9D,
+    "RTS": 0x39, "RTI": 0x3B,
+
+    # Clear
+    "CLR_DIR": 0x6F, "CLR_EXT": 0x7F, "CLR_IDX": 0x6F,
+
+    # System
+    "NOP": 0x01, "SWI": 0x3F, "WAI": 0x3E, "WAIT": 0x3E, "SYNC": 0x13,
+    "DAA": 0x19,
+
+    # INC/DEC
+    "INCA": 0x4C, "INCB": 0x5C,
+    "INC_DIR": 0x6C, "INC_EXT": 0x7C, "INC_IDX": 0x6C,
+    "DECA": 0x4A, "DECB": 0x5A,
+    "DEC_DIR": 0x6A, "DEC_EXT": 0x7A, "DEC_IDX": 0x6A,
+
+    # TST
+    "TST_DIR": 0x6D, "TST_EXT": 0x7D, "TST_IDX": 0x6D,
+
+    # NEG
+    "NEG_DIR": 0x60, "NEG_EXT": 0x70, "NEG_IDX": 0x60,
+
+    # COM
+    "COM_DIR": 0x63, "COM_EXT": 0x73, "COM_IDX": 0x63,
+
+    # ASL
+    "ASL_DIR": 0x68, "ASL_EXT": 0x78, "ASL_IDX": 0x68,
+
+    # ASR
+    "ASR_DIR": 0x67, "ASR_EXT": 0x77, "ASR_IDX": 0x67,
+
+    # LSR
+    "LSR_DIR": 0x64, "LSR_EXT": 0x74, "LSR_IDX": 0x64,
+
+    # ROL
+    "ROL_DIR": 0x69, "ROL_EXT": 0x79, "ROL_IDX": 0x69,
+
+    # ROR
+    "ROR_DIR": 0x66, "ROR_EXT": 0x76, "ROR_IDX": 0x66,
+}  # Son haliyle genişletildi
