@@ -5,15 +5,14 @@ This project is an assembler simulator for the Motorola 6800 microprocessor. Dev
 The aim of this project is to understand the logic behind an assembler and to build an interactive system capable of translating Motorola 6800 assembly code into corresponding machine code.
 
 📁 Project Structure
-bash
-Kopyala
-Düzenle
+
 Assembler_mc6800/
 ├── assembler.py            # Assembler class: parsing, opcode handling, memory and register operations
 ├── gui.py                  # Tkinter-based graphical user interface
 ├── opcodes_full.py         # Complete 6800 instruction set and opcode definitions
 ├── tempCodeRunnerFile.py   # Temporary working file (can be ignored)
 ├── __pycache__/            # Compiled Python bytecode files (can be ignored)
+
 🖥️ Features
 Analyzes assembly code line by line.
 
@@ -32,9 +31,7 @@ Python 3.7+
 Tkinter (included with standard Python installation)
 
 To Run the Application
-bash
-Kopyala
-Düzenle
+
 python gui.py
 Once the GUI opens, you can enter your assembly code and click the Assemble button. The compiled output, memory content, and register state will be displayed on the screen.
 
